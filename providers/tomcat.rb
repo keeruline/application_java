@@ -62,7 +62,19 @@ action :before_symlink do
 end
 
 action :before_restart do
+  explode_war
 end
 
 action :after_restart do
+end
+
+def explode_war
+  script "explode war" do
+    interpreter "bash"
+    user new_resource.owner
+    cwd ::File.join(new_resource.application.path, "current")
+    code <<-EOH
+      jar -xf *.war
+    EOH
+  end
 end
